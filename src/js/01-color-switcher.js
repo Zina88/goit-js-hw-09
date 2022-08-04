@@ -14,13 +14,19 @@ function onStartClick() {
   if (isActive) {
     return;
   }
+  // console.log('start');
   isActive = true;
+
   intervalId = setInterval(() => {
     refs.body.style.backgroundColor = getRandomHexColor();
   }, 1000);
 }
 
 function onStopClick() {
+  if (!isActive) {
+    return;
+  }
+  // console.log('stop');
   clearInterval(intervalId);
   isActive = false;
 }
