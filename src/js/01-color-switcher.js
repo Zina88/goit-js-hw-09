@@ -6,18 +6,11 @@ const refs = {
 
 refs.start.addEventListener('click', onStartClick);
 refs.stop.addEventListener('click', onStopClick);
-
-let intervalId = null;
-let isActive = false;
-
 refs.stop.disabled = true;
+let intervalId = null;
 
 function onStartClick() {
-  if (isActive) {
-    return;
-  }
   // console.log('start');
-  isActive = true;
   refs.start.disabled = true;
   refs.stop.disabled = false;
 
@@ -27,14 +20,10 @@ function onStartClick() {
 }
 
 function onStopClick() {
-  if (!isActive) {
-    return;
-  }
   // console.log('stop');
   refs.start.disabled = false;
   refs.stop.disabled = true;
   clearInterval(intervalId);
-  isActive = false;
 }
 
 function getRandomHexColor() {
