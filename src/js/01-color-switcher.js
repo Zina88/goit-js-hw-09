@@ -10,12 +10,16 @@ refs.stop.addEventListener('click', onStopClick);
 let intervalId = null;
 let isActive = false;
 
+refs.stop.disabled = true;
+
 function onStartClick() {
   if (isActive) {
     return;
   }
   // console.log('start');
   isActive = true;
+  refs.start.disabled = true;
+  refs.stop.disabled = false;
 
   intervalId = setInterval(() => {
     refs.body.style.backgroundColor = getRandomHexColor();
@@ -27,6 +31,8 @@ function onStopClick() {
     return;
   }
   // console.log('stop');
+  refs.start.disabled = false;
+  refs.stop.disabled = true;
   clearInterval(intervalId);
   isActive = false;
 }
