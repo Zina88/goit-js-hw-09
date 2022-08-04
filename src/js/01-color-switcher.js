@@ -14,7 +14,6 @@ function onStartClick() {
   if (isActive) {
     return;
   }
-
   isActive = true;
   intervalId = setInterval(() => {
     refs.body.style.backgroundColor = getRandomHexColor();
