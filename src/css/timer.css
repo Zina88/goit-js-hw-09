@@ -3,9 +3,9 @@ body {
 }
 
 input {
-    display: flex;
+    display: flex; 
     margin: 0 auto;
-    min-width: 500px;
+    width: 500px;
     height: 50px;
     padding: 0 10px 0 10px;
     border: 1px solid #cccccc;
@@ -17,7 +17,7 @@ button {
     margin: 0 auto;
     justify-content: center;
     align-items: center;
-    min-width: 500px;
+    width: 500px;
     height: 50px;
     margin-bottom: 50px;
 

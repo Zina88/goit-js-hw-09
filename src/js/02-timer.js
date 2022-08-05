@@ -18,7 +18,7 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
-    if (selectedDates[0] <= Date.now()) {
+    if (selectedDates[0] < Date.now()) {
       window.alert('Please choose a date in the future');
       selectedDates[0] = new Date();
     } else {
@@ -36,15 +36,17 @@ function convertMs(ms) {
   const hour = minute * 60;
   const day = hour * 24;
 
-  const days = pad(Math.floor(ms / day));
-  const hours = pad(Math.floor((ms % day) / hour));
-  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
-  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
+  const days = addLeadingZero(Math.floor(ms / day));
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+  const seconds = addLeadingZero(
+    Math.floor((((ms % day) % hour) % minute) / second)
+  );
 
   return { days, hours, minutes, seconds };
 }
 
-function pad(value) {
+function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
 
@@ -65,15 +67,16 @@ class Timer {
       const currentTime = Date.now();
       const delta = selectedTime - currentTime;
       const componentsTimer = convertMs(delta);
-      this.updateComponentsTimer(componentsTimer);
+      this.getTimeComponents(componentsTimer);
       // console.log(convertMs(delta));
-      if (delta <= 0) {
+
+      if (delta < 0) {
         this.stopTimer();
       }
     }, 1000);
   }
 
-  updateComponentsTimer({ days, hours, minutes, seconds }) {
+  getTimeComponents({ days, hours, minutes, seconds }) {
     refs.daysEl.textContent = days;
     refs.hoursEl.textContent = hours;
     refs.minutesEl.textContent = minutes;
@@ -82,6 +85,7 @@ class Timer {
 
   stopTimer() {
     clearInterval(this.timerId);
+    this.isActive = false;
   }
 }
 
