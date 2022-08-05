@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/dark.css';
 
 const refs = {
   start: document.querySelector('button[data-start]'),
@@ -7,8 +8,8 @@ const refs = {
 };
 
 refs.start.addEventListener('click', onStartBtn);
-let selectedTime = null;
 
+let selectedTime = null;
 refs.start.disabled = true;
 
 const options = {
@@ -26,7 +27,6 @@ const options = {
       selectedTime = selectedDates[0];
       setInterval(() => {
         const delta = selectedTime - Date.now();
-        // console.log(delta);
         timer(delta);
       }, 1000);
     }
@@ -55,4 +55,3 @@ function timer(ms) {
   minutesEl.textContent = minutes < 10 ? `0${minutes}` : minutes;
   secondsEl.textContent = seconds < 10 ? `0${seconds}` : seconds;
 }
-// При нажатии на кнопку «Start» начинается отсчет времени до выбранной даты с момента нажатия.
