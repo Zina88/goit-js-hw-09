@@ -5,12 +5,11 @@ import 'flatpickr/dist/themes/dark.css';
 const refs = {
   start: document.querySelector('button[data-start]'),
   picker: document.querySelector('#datetime-picker'),
+  daysEl: document.querySelector('[data-days]'),
+  hoursEl: document.querySelector('[data-hours]'),
+  minutesEl: document.querySelector('[data-minutes]'),
+  secondsEl: document.querySelector('[data-seconds]'),
 };
-
-// refs.start.addEventListener('click', onStartBtn);
-
-let selectedTime = null;
-refs.start.disabled = true;
 
 const options = {
   enableTime: true,
@@ -25,14 +24,6 @@ const options = {
     } else {
       selectedTime = selectedDates[0];
       refs.start.disabled = false;
-      refs.start.addEventListener('click', () => {
-        refs.start.disabled = true;
-        setInterval(() => {
-          const delta = selectedTime - Date.now();
-          convertMs(delta);
-          console.log(convertMs(delta));
-        }, 1000);
-      });
     }
   },
 };
@@ -45,20 +36,54 @@ function convertMs(ms) {
   const hour = minute * 60;
   const day = hour * 24;
 
-  const days = Math.floor(ms / day);
-  const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const days = pad(Math.floor(ms / day));
+  const hours = pad(Math.floor((ms % day) / hour));
+  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
+  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
-  // return { days, hours, minutes, seconds };
-
-  const daysEl = document.querySelector('[data-days]');
-  const hoursEl = document.querySelector('[data-hours]');
-  const minutesEl = document.querySelector('[data-minutes]');
-  const secondsEl = document.querySelector('[data-seconds]');
-
-  daysEl.textContent = days;
-  hoursEl.textContent = hours;
-  minutesEl.textContent = minutes;
-  secondsEl.textContent = seconds;
+  return { days, hours, minutes, seconds };
 }
+
+function pad(value) {
+  return String(value).padStart(2, '0');
+}
+
+class Timer {
+  constructor() {
+    this.timerID = null;
+    this.isActive = false;
+    refs.start.disabled = true;
+  }
+
+  startTimer() {
+    if (this.isActive) {
+      return;
+    }
+
+    this.isActive = true;
+    this.timeriID = setInterval(() => {
+      const currentTime = Date.now();
+      const delta = selectedTime - currentTime;
+      const componentsTimer = convertMs(delta);
+      this.updateComponentsTimer(componentsTimer);
+      // console.log(convertMs(delta));
+      if (delta <= 0) {
+        this.stopTimer();
+      }
+    }, 1000);
+  }
+
+  updateComponentsTimer({ days, hours, minutes, seconds }) {
+    refs.daysEl.textContent = days;
+    refs.hoursEl.textContent = hours;
+    refs.minutesEl.textContent = minutes;
+    refs.secondsEl.textContent = seconds;
+  }
+
+  stopTimer() {
+    clearInterval(this.timerId);
+  }
+}
+
+const timer = new Timer();
+refs.start.addEventListener('click', () => timer.startTimer());
