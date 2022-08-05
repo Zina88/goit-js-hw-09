@@ -35,7 +35,7 @@ button:disabled {
 
 button:hover,
 button:focus {
-    background-color: #babacf;
+    background-color: #ceced9;
 }
 
 .timer {

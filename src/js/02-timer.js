@@ -7,7 +7,7 @@ const refs = {
   picker: document.querySelector('#datetime-picker'),
 };
 
-refs.start.addEventListener('click', onStartBtn);
+// refs.start.addEventListener('click', onStartBtn);
 
 let selectedTime = null;
 refs.start.disabled = true;
@@ -23,21 +23,20 @@ const options = {
       window.alert('Please choose a date in the future');
       selectedDates[0] = new Date();
     } else {
-      refs.start.disabled = false;
       selectedTime = selectedDates[0];
-      setInterval(() => {
-        const delta = selectedTime - Date.now();
-        timer(delta);
-      }, 1000);
+      refs.start.disabled = false;
+      refs.start.addEventListener('click', () => {
+        refs.start.disabled = true;
+        setInterval(() => {
+          const delta = selectedTime - Date.now();
+          timer(delta);
+        }, 1000);
+      });
     }
   },
 };
 
 flatpickr(refs.picker, options);
-
-function onStartBtn() {
-  console.log('start');
-}
 
 function timer(ms) {
   const days = Math.floor(ms / 1000 / 60 / 60 / 24);
