@@ -8,11 +8,8 @@ const refs = {
 
 refs.start.addEventListener('click', onStartBtn);
 let selectedTime = null;
-const currentTime = Date.now();
-let delta = null;
 
 refs.start.disabled = true;
-// let delta = null;
 
 const options = {
   enableTime: true,
@@ -21,12 +18,17 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     console.log(selectedDates[0]);
-    if (selectedDates[0] < Date.now()) {
+    if (selectedDates[0] <= Date.now()) {
       window.alert('Please choose a date in the future');
       selectedDates[0] = new Date();
     } else {
       refs.start.disabled = false;
       selectedTime = selectedDates[0];
+      setInterval(() => {
+        const delta = selectedTime - Date.now();
+        // console.log(delta);
+        timer(delta);
+      }, 1000);
     }
   },
 };
@@ -35,20 +37,13 @@ flatpickr(refs.picker, options);
 
 function onStartBtn() {
   console.log('start');
-
-  delta = selectedTime - currentTime;
-  setInterval(timer, 1000);
 }
 
-function timer() {
-  const days = Math.floor(delta / 1000 / 60 / 60 / 24);
-  console.log('days ', days);
-  const hours = Math.floor((delta / 1000 / 60 / 60) % 24);
-  console.log('hours ', hours);
-  const minutes = Math.floor((delta / 1000 / 60) % 60);
-  console.log('minutes ', minutes);
-  const seconds = Math.floor((delta / 1000) % 60);
-  console.log('seconds ', seconds);
+function timer(ms) {
+  const days = Math.floor(ms / 1000 / 60 / 60 / 24);
+  const hours = Math.floor((ms / 1000 / 60 / 60) % 24);
+  const minutes = Math.floor((ms / 1000 / 60) % 60);
+  const seconds = Math.floor((ms / 1000) % 60);
 
   const daysEl = document.querySelector('[data-days]');
   const hoursEl = document.querySelector('[data-hours]');
