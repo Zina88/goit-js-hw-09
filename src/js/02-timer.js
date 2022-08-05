@@ -29,7 +29,8 @@ const options = {
         refs.start.disabled = true;
         setInterval(() => {
           const delta = selectedTime - Date.now();
-          timer(delta);
+          convertMs(delta);
+          console.log(convertMs(delta));
         }, 1000);
       });
     }
@@ -38,19 +39,26 @@ const options = {
 
 flatpickr(refs.picker, options);
 
-function timer(ms) {
-  const days = Math.floor(ms / 1000 / 60 / 60 / 24);
-  const hours = Math.floor((ms / 1000 / 60 / 60) % 24);
-  const minutes = Math.floor((ms / 1000 / 60) % 60);
-  const seconds = Math.floor((ms / 1000) % 60);
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  // return { days, hours, minutes, seconds };
 
   const daysEl = document.querySelector('[data-days]');
   const hoursEl = document.querySelector('[data-hours]');
   const minutesEl = document.querySelector('[data-minutes]');
   const secondsEl = document.querySelector('[data-seconds]');
 
-  daysEl.textContent = days < 10 ? `0${days}` : days;
-  hoursEl.textContent = hours < 10 ? `0${hours}` : hours;
-  minutesEl.textContent = minutes < 10 ? `0${minutes}` : minutes;
-  secondsEl.textContent = seconds < 10 ? `0${seconds}` : seconds;
+  daysEl.textContent = days;
+  hoursEl.textContent = hours;
+  minutesEl.textContent = minutes;
+  secondsEl.textContent = seconds;
 }
