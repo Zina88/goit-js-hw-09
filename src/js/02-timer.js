@@ -23,7 +23,6 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
     if (selectedDates[0] < Date.now()) {
       Notify.failure('Please choose a date in the future');
       selectedDates[0] = new Date();
@@ -47,7 +46,6 @@ function startTimer() {
     const currentTime = Date.now();
     const delta = selectedTime - currentTime;
     refs.start.disabled = true;
-    console.log(delta);
 
     if (delta <= 0) {
       // stopTimer();
