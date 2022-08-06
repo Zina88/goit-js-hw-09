@@ -1,6 +1,7 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/dark.css';
+import Notiflix from 'notiflix';
 
 const refs = {
   start: document.querySelector('button[data-start]'),
@@ -11,6 +12,11 @@ const refs = {
   secondsEl: document.querySelector('[data-seconds]'),
 };
 
+refs.start.addEventListener('click', startTimer);
+refs.start.disabled = true;
+let isActive = false;
+let timerId = null;
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -19,8 +25,9 @@ const options = {
   onClose(selectedDates) {
     console.log(selectedDates[0]);
     if (selectedDates[0] < Date.now()) {
-      window.alert('Please choose a date in the future');
+      Notiflix.Notify.failure('Please choose a date in the future');
       selectedDates[0] = new Date();
+      return;
     } else {
       selectedTime = selectedDates[0];
       refs.start.disabled = false;
@@ -29,6 +36,36 @@ const options = {
 };
 
 flatpickr(refs.picker, options);
+
+function startTimer() {
+  if (isActive) {
+    return;
+  }
+
+  isActive = true;
+  timerId = setInterval(() => {
+    const currentTime = Date.now();
+    const delta = selectedTime - currentTime;
+    refs.start.disabled = true;
+    console.log(delta);
+
+    if (delta <= 0) {
+      // stopTimer();
+      clearInterval(timerId);
+      timerId = null;
+      isActive = false;
+      refs.start.disabled = true;
+      Notiflix.Notify.success('Time is over');
+      return;
+    }
+
+    const componentsTimer = convertMs(delta);
+    getTimeComponents(componentsTimer);
+  }, 1000);
+}
+
+// function stopTimer() {
+// }
 
 function convertMs(ms) {
   const second = 1000;
@@ -50,44 +87,9 @@ function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
 
-class Timer {
-  constructor() {
-    this.timerID = null;
-    this.isActive = false;
-    refs.start.disabled = true;
-  }
-
-  startTimer() {
-    if (this.isActive) {
-      return;
-    }
-
-    this.isActive = true;
-    this.timeriID = setInterval(() => {
-      const currentTime = Date.now();
-      const delta = selectedTime - currentTime;
-      const componentsTimer = convertMs(delta);
-      this.getTimeComponents(componentsTimer);
-      // console.log(convertMs(delta));
-
-      if (delta < 0) {
-        this.stopTimer();
-      }
-    }, 1000);
-  }
-
-  getTimeComponents({ days, hours, minutes, seconds }) {
-    refs.daysEl.textContent = days;
-    refs.hoursEl.textContent = hours;
-    refs.minutesEl.textContent = minutes;
-    refs.secondsEl.textContent = seconds;
-  }
-
-  stopTimer() {
-    clearInterval(this.timerId);
-    this.isActive = false;
-  }
+function getTimeComponents({ days, hours, minutes, seconds }) {
+  refs.daysEl.textContent = days;
+  refs.hoursEl.textContent = hours;
+  refs.minutesEl.textContent = minutes;
+  refs.secondsEl.textContent = seconds;
 }
-
-const timer = new Timer();
-refs.start.addEventListener('click', () => timer.startTimer());
