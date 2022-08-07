@@ -13,10 +13,6 @@ function onSubmitForm(e) {
   const step = Number(e.currentTarget.step.value);
   const amount = Number(e.currentTarget.amount.value);
 
-  console.log('delay', delay);
-  console.log('step', step);
-  console.log('amount', amount);
-
   for (let position = 1; position <= amount; position += 1) {
     createPromise(position, delay)
       .then(({ position, delay }) => {
