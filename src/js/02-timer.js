@@ -3,6 +3,10 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/dark.css';
 import { Notify } from 'notiflix';
 
+Notify.init({
+  width: '100%',
+});
+
 const refs = {
   start: document.querySelector('button[data-start]'),
   picker: document.querySelector('#datetime-picker'),
@@ -22,17 +26,20 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    if (selectedDates[0] < Date.now()) {
-      Notify.failure('Please choose a date in the future');
-      selectedDates[0] = new Date();
-      return;
-    } else {
-      selectedTime = selectedDates[0];
-      refs.start.disabled = false;
-    }
-  },
+  onClose,
 };
+
+function onClose(selectedDates) {
+  if (selectedDates[0] < Date.now()) {
+    Notify.failure('Please choose a date in the future');
+    selectedDates[0] = new Date();
+    return;
+  } else {
+    selectedTime = selectedDates[0];
+    refs.start.disabled = false;
+    clearInterval(timerId);
+  }
+}
 
 flatpickr(refs.picker, options);
 
@@ -48,12 +55,7 @@ function startTimer() {
     refs.start.disabled = true;
 
     if (delta <= 0) {
-      // stopTimer();
-      clearInterval(timerId);
-      timerId = null;
-      isActive = false;
-      refs.start.disabled = true;
-      Notify.success('Time is over');
+      stopTimer();
       return;
     }
 
@@ -62,8 +64,14 @@ function startTimer() {
   }, 1000);
 }
 
-// function stopTimer() {
-// }
+function stopTimer() {
+  clearInterval(timerId);
+  timerId = null;
+  isActive = false;
+  refs.start.disabled = true;
+  Notify.success('Time is over');
+  return;
+}
 
 function convertMs(ms) {
   const second = 1000;
