@@ -47,7 +47,7 @@ function startTimer() {
   if (isActive) {
     return;
   }
-
+  
   isActive = true;
   timerId = setInterval(() => {
     const currentTime = Date.now();
